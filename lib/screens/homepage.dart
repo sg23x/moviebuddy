@@ -62,21 +62,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Future pickImage() async {
-  //   try {
-  //     final img = await ImagePicker().getImage(source: ImageSource.gallery);
-  //     if (img == null) return;
-  //     final imageTemporary = File(img.path);
-  //     setState(
-  //       () {
-  //         this.posterImage = imageTemporary;
-  //       },
-  //     );
-  //   } on PlatformException catch (e) {
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
-
   Future pickImg() async {
     final img = await ImagePicker().getImage(source: ImageSource.gallery);
     if (img == null) return;
@@ -149,10 +134,25 @@ class _HomePageState extends State<HomePage> {
                     _dirName = val;
                   },
                 ),
-                RaisedButton(
-                  onPressed: () {
-                    pickImg();
-                  },
+                Row(
+                  children: [
+                    box != null
+                        ? Container(
+                            height: 100,
+                            child: Image.file(
+                              File(
+                                box.getAt(index).posterImage,
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : SizedBox(),
+                    RaisedButton(
+                      onPressed: () {
+                        pickImg();
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

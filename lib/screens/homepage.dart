@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:moviebuddy/widgets/movieListItem.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,6 +15,7 @@ class _HomePageState extends State<HomePage> {
   List moviesList = [];
   ScrollController _scrollController = new ScrollController();
   int itemSetLength = 10;
+  File posterImage;
 
   @override
   void initState() {
@@ -32,6 +36,21 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future pickImage() async {
+    try {
+      final img = await ImagePicker().getImage(source: ImageSource.gallery);
+      if (img == null) return;
+      final imageTemporary = File(img.path);
+      setState(
+        () {
+          this.posterImage = imageTemporary;
+        },
+      );
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
 
   void deleteMovieItem({int index}) {
@@ -79,7 +98,7 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           title: Text(type == "add" ? 'Add Movie' : 'Edit Movie'),
           content: Container(
-            height: 150,
+            height: 200,
             child: Column(
               children: [
                 TextFormField(
@@ -99,6 +118,12 @@ class _HomePageState extends State<HomePage> {
                   onChanged: (val) {
                     _dirName = val;
                   },
+                ),
+                RaisedButton(
+                  onPressed: () {
+                    pickImage();
+                  },
+                  child: Text("Add Poster"),
                 ),
               ],
             ),
@@ -124,6 +149,7 @@ class _HomePageState extends State<HomePage> {
                           {
                             'movieName': _movName,
                             'movieDirector': _dirName,
+                            'posterImage': posterImage,
                           },
                         );
                       });
@@ -168,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                       return MovieListItem(
                         movieName: moviesList[i]['movieName'],
                         movieDirector: moviesList[i]['movieDirector'],
+                        imageFile: moviesList[i]['posterImage'],
                         deleteMovieItem: () => deleteMovieItem(index: i),
                         editMovieItem: () =>
                             editMovieItem(index: i, type: 'edit'),

@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class MovieListItem extends StatelessWidget {
   MovieListItem({
     this.movieName,
     this.movieDirector,
+    this.imageFile,
     this.deleteMovieItem,
     this.editMovieItem,
   });
   String movieName;
   String movieDirector;
+  File imageFile;
   VoidCallback deleteMovieItem;
   VoidCallback editMovieItem;
 
@@ -28,11 +32,11 @@ class MovieListItem extends StatelessWidget {
         border: Border.all(width: 2, color: Colors.black),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          CircleAvatar(
-            radius: 40,
-          ),
+          Image.file(imageFile),
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text('$movieName'),
               Text('by $movieDirector'),

@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List moviesList = [];
   ScrollController _scrollController = new ScrollController();
-  int itemSetLength = 10;
+  int itemSetLength = 5;
   String posterImage;
 
   @override
@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
         if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent) {
           setState(() {
-            itemSetLength += 10;
+            itemSetLength += 5;
           });
         }
       },
@@ -113,32 +113,74 @@ class _HomePageState extends State<HomePage> {
         return AlertDialog(
           title: Text(type == "add" ? 'Add Movie' : 'Edit Movie'),
           content: Container(
-            height: 200,
+            height: MediaQuery.of(context).size.height * 0.3,
             child: Column(
               children: [
-                TextFormField(
-                  initialValue: _movName,
-                  decoration: InputDecoration(
-                    labelText: 'Movie Name',
-                  ),
-                  onChanged: (val) {
-                    _movName = val;
-                  },
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
                 ),
-                TextFormField(
-                  initialValue: _dirName,
-                  decoration: InputDecoration(
-                    labelText: 'Director Name',
+                Theme(
+                  data: ThemeData(
+                    primaryColor: Colors.grey,
                   ),
-                  onChanged: (val) {
-                    _dirName = val;
-                  },
+                  child: TextFormField(
+                    initialValue: _movName,
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    decoration: InputDecoration(
+                      counterText: '',
+                      labelText: 'Movie Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          7,
+                        ),
+                      ),
+                    ),
+                    onChanged: (val) {
+                      _movName = val;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
+                Theme(
+                  data: ThemeData(
+                    primaryColor: Colors.grey,
+                  ),
+                  child: TextFormField(
+                    initialValue: _dirName,
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    decoration: InputDecoration(
+                      counterText: '',
+                      labelText: 'Director Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          7,
+                        ),
+                      ),
+                    ),
+                    onChanged: (val) {
+                      _dirName = val;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     box != null
                         ? Container(
-                            height: 100,
+                            height: MediaQuery.of(context).size.height * 0.1,
                             child: Image.file(
                               File(
                                 box.getAt(index).posterImage,
@@ -148,6 +190,7 @@ class _HomePageState extends State<HomePage> {
                           )
                         : SizedBox(),
                     RaisedButton(
+                      child: Text(type == "add" ? 'Add Poster' : "Edit Poster"),
                       onPressed: () {
                         pickImg();
                       },
@@ -195,9 +238,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: Text('Welcome Soumya!'),
+        backgroundColor: Colors.black87,
       ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<Movie>('movies').listenable(),
@@ -233,8 +280,10 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
         child: Icon(
           Icons.add,
+          color: Colors.black,
         ),
         onPressed: () => editMovieItem(type: 'add'),
       ),

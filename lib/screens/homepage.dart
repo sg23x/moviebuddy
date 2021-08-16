@@ -9,41 +9,114 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List moviesList = [];
 
-  void deleteMovieItem(index) {
-    setState(
-      () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              content: Text(
-                  "Are you sure your want to delete this Movie from the list?"),
-              actions: [
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.pink,
-                    ),
-                  ),
+  void deleteMovieItem({int index}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(
+              "Are you sure your want to delete this Movie from the list?"),
+          actions: [
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.pink,
                 ),
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    setState(() {
-                      moviesList.removeAt(index);
-                    });
-                  },
-                  child: Text(
-                    'Delete',
+              ),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                setState(() {
+                  moviesList.removeAt(index);
+                });
+              },
+              child: Text(
+                'Delete',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void editMovieItem({int index, String type}) {
+    String _movName = type == 'add' ? '' : moviesList[index]['movieName'];
+    String _dirName = type == 'add' ? '' : moviesList[index]['movieDirector'];
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(type == "add" ? 'Add Movie' : 'Edit Movie'),
+          content: Container(
+            height: 150,
+            child: Column(
+              children: [
+                TextFormField(
+                  initialValue: _movName,
+                  decoration: InputDecoration(
+                    labelText: 'Movie Name',
                   ),
+                  onChanged: (val) {
+                    _movName = val;
+                  },
+                ),
+                TextFormField(
+                  initialValue: _dirName,
+                  decoration: InputDecoration(
+                    labelText: 'Director Name',
+                  ),
+                  onChanged: (val) {
+                    _dirName = val;
+                  },
                 ),
               ],
-            );
-          },
+            ),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.pink,
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: type == "add"
+                  ? () {
+                      Navigator.pop(context);
+                      setState(() {
+                        moviesList.add(
+                          {
+                            'movieName': _movName,
+                            'movieDirector': _dirName,
+                          },
+                        );
+                      });
+                    }
+                  : () {
+                      Navigator.pop(context);
+                      setState(
+                        () {
+                          moviesList[index]['movieName'] = _movName;
+                          moviesList[index]['movieDirector'] = _dirName;
+                        },
+                      );
+                    },
+              child: Text(
+                type == "add" ? 'Add' : 'Done',
+              ),
+            ),
+          ],
         );
       },
     );
@@ -69,7 +142,9 @@ class _HomePageState extends State<HomePage> {
                       return MovieListItem(
                         movieName: moviesList[i]['movieName'],
                         movieDirector: moviesList[i]['movieDirector'],
-                        deleteMovieItem: () => deleteMovieItem(i),
+                        deleteMovieItem: () => deleteMovieItem(index: i),
+                        editMovieItem: () =>
+                            editMovieItem(index: i, type: 'edit'),
                       );
                     },
                   ),
@@ -80,74 +155,7 @@ class _HomePageState extends State<HomePage> {
         child: Icon(
           Icons.add,
         ),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              String _movName = '';
-              String _dirName = '';
-              return AlertDialog(
-                title: Text(
-                  'Add Movie',
-                ),
-                content: Container(
-                  height: 150,
-                  child: Column(
-                    children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Movie Name',
-                        ),
-                        onChanged: (val) {
-                          _movName = val;
-                        },
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Director Name',
-                        ),
-                        onChanged: (val) {
-                          _dirName = val;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Colors.pink,
-                      ),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      setState(
-                        () {
-                          moviesList.add(
-                            {
-                              'movieName': _movName,
-                              'movieDirector': _dirName,
-                            },
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Add',
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        },
+        onPressed: () => editMovieItem(type: 'add'),
       ),
     );
   }

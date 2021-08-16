@@ -5,10 +5,12 @@ class MovieListItem extends StatelessWidget {
     this.movieName,
     this.movieDirector,
     this.deleteMovieItem,
+    this.editMovieItem,
   });
   String movieName;
   String movieDirector;
   VoidCallback deleteMovieItem;
+  VoidCallback editMovieItem;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class MovieListItem extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {},
+            onPressed: editMovieItem,
           ),
           IconButton(
             icon: Icon(Icons.delete),

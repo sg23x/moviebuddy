@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:moviebuddy/widgets/movieListItem.dart';
 
-class HomePage extends StatelessWidget {
-  List _movies = [
-    {
-      'movieName': 'shershaah',
-      'movieDirector': 'kia seltos',
-    },
-    {
-      'movieName': 'kbc',
-      'movieDirector': 'apple',
-    },
-    {
-      'movieName': '3 idiots',
-      'movieDirector': 'virus',
-    }
-  ];
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List moviesList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +15,96 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Welcome Soumya!'),
       ),
-      body: ListView.builder(
-        itemCount: _movies.length,
-        itemBuilder: (context, i) {
-          return MovieListItem(
-            movieName: _movies[i]['movieName'],
-            movieDirector: _movies[i]['movieDirector'],
+      body: moviesList.isEmpty
+          ? Center(
+              child: Text('Movies list is empty'),
+            )
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: moviesList.length,
+                    itemBuilder: (context, i) {
+                      return MovieListItem(
+                        movieName: moviesList[i]['movieName'],
+                        movieDirector: moviesList[i]['movieDirector'],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+        ),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              String _movName = '';
+              String _dirName = '';
+              return AlertDialog(
+                title: Text(
+                  'Add Movie',
+                ),
+                content: Container(
+                  height: 150,
+                  child: Column(
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Movie Name',
+                        ),
+                        onChanged: (val) {
+                          _movName = val;
+                        },
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Director Name',
+                        ),
+                        onChanged: (val) {
+                          _dirName = val;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.pink,
+                      ),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      setState(
+                        () {
+                          moviesList.add(
+                            {
+                              'movieName': _movName,
+                              'movieDirector': _dirName,
+                            },
+                          );
+                        },
+                      );
+                    },
+                    child: Text(
+                      'Add',
+                    ),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),

@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     pickImage();
                   },
-                  child: Text("Add Poster"),
+                  child: Text(type == "add" ? 'Add Poster' : "Edit Poster"),
                 ),
               ],
             ),
@@ -160,6 +160,7 @@ class _HomePageState extends State<HomePage> {
                         () {
                           moviesList[index]['movieName'] = _movName;
                           moviesList[index]['movieDirector'] = _dirName;
+                          moviesList[index]['posterImage'] = posterImage;
                         },
                       );
                     },

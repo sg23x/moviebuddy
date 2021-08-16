@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 class MovieListItem extends StatelessWidget {
+  MovieListItem({
+    this.movieName,
+    this.movieDirector,
+  });
+  String movieName;
+  String movieDirector;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,8 +30,8 @@ class MovieListItem extends StatelessWidget {
           ),
           Column(
             children: [
-              Text('Shershaah'),
-              Text('by Kiara'),
+              Text(movieName),
+              Text('by $movieDirector'),
             ],
           ),
         ],

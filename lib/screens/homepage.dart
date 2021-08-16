@@ -1,13 +1,18 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moviebuddy/adapters/moviesAdapter.dart';
+import 'package:moviebuddy/screens/login.dart';
 import 'package:moviebuddy/widgets/movieListItem.dart';
 
 class HomePage extends StatefulWidget {
+  HomePage({@required this.user});
+  final user;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -238,13 +243,68 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        title: Text('Welcome Soumya!'),
+        title: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(widget.user.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return SizedBox();
+            }
+            return Text("Welcome " + snapshot.data['name']);
+          },
+        ),
         backgroundColor: Colors.black87,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.power_settings_new),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Text("Are you sure your want to log out?"),
+                    actions: [
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: Colors.pink,
+                          ),
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          FirebaseAuth.instance.signOut().then(
+                            (value) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      LoginScreen(),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          'Log out',
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<Movie>('movies').listenable(),

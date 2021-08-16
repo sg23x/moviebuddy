@@ -7,7 +7,7 @@ import 'package:moviebuddy/screens/homepage.dart';
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(MovieAdapter());
-  await Hive.openBox('movies');
+  await Hive.openBox<Movie>('movies');
   runApp(MyApp());
 }
 

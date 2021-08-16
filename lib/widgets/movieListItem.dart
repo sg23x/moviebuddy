@@ -4,9 +4,11 @@ class MovieListItem extends StatelessWidget {
   MovieListItem({
     this.movieName,
     this.movieDirector,
+    this.deleteMovieItem,
   });
   String movieName;
   String movieDirector;
+  VoidCallback deleteMovieItem;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,17 @@ class MovieListItem extends StatelessWidget {
           ),
           Column(
             children: [
-              Text(movieName),
+              Text('$movieName'),
               Text('by $movieDirector'),
             ],
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: deleteMovieItem,
           ),
         ],
       ),

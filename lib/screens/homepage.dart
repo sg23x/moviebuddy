@@ -9,6 +9,46 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List moviesList = [];
 
+  void deleteMovieItem(index) {
+    setState(
+      () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Text(
+                  "Are you sure your want to delete this Movie from the list?"),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.pink,
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      moviesList.removeAt(index);
+                    });
+                  },
+                  child: Text(
+                    'Delete',
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +69,7 @@ class _HomePageState extends State<HomePage> {
                       return MovieListItem(
                         movieName: moviesList[i]['movieName'],
                         movieDirector: moviesList[i]['movieDirector'],
+                        deleteMovieItem: () => deleteMovieItem(i),
                       );
                     },
                   ),

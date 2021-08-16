@@ -19,7 +19,7 @@ class MovieAdapter extends TypeAdapter<Movie> {
     return Movie(
       movieName: fields[0] as String,
       movieDirector: fields[1] as String,
-      posterImage: fields[2] as File,
+      posterImage: fields[2] as String,
     );
   }
 

@@ -6,13 +6,13 @@ class MovieListItem extends StatelessWidget {
   MovieListItem({
     this.movieName,
     this.movieDirector,
-    // this.imageFile,
+    this.imageFile,
     this.deleteMovieItem,
     this.editMovieItem,
   });
   String movieName;
   String movieDirector;
-  // File imageFile;
+  String imageFile;
   VoidCallback deleteMovieItem;
   VoidCallback editMovieItem;
 
@@ -34,7 +34,7 @@ class MovieListItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          // Image.file(imageFile),
+          imageFile != null ? Image.file(File(imageFile)) : SizedBox(),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:moviebuddy/adapters/moviesAdapter.dart';
@@ -17,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   List moviesList = [];
   ScrollController _scrollController = new ScrollController();
   int itemSetLength = 10;
-  File posterImage;
+  String posterImage;
 
   @override
   void initState() {
@@ -40,16 +39,27 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void addMovie(name, dir) {
+  void addMovie(name, dir, img) {
     Box<Movie> movbox = Hive.box<Movie>('movies');
     movbox.add(
-      Movie(movieName: name, movieDirector: dir),
+      Movie(
+        movieName: name,
+        movieDirector: dir,
+        posterImage: img,
+      ),
     );
   }
 
-  void editMovie(name, dir, index) {
+  void editMovie(name, dir, img, index) {
     Box<Movie> movbox = Hive.box<Movie>('movies');
-    movbox.putAt(index, Movie(movieName: name, movieDirector: dir));
+    movbox.putAt(
+      index,
+      Movie(
+        movieName: name,
+        movieDirector: dir,
+        posterImage: img,
+      ),
+    );
   }
 
   // Future pickImage() async {
@@ -66,6 +76,14 @@ class _HomePageState extends State<HomePage> {
   //     print('Failed to pick image: $e');
   //   }
   // }
+
+  Future pickImg() async {
+    final img = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (img == null) return;
+    setState(() {
+      this.posterImage = img.path;
+    });
+  }
 
   void deleteMovieItem({int index, Box box}) {
     showDialog(
@@ -131,6 +149,11 @@ class _HomePageState extends State<HomePage> {
                     _dirName = val;
                   },
                 ),
+                RaisedButton(
+                  onPressed: () {
+                    pickImg();
+                  },
+                ),
               ],
             ),
           ),
@@ -149,11 +172,15 @@ class _HomePageState extends State<HomePage> {
             FlatButton(
               onPressed: type == "add"
                   ? () {
-                      addMovie(_movName, _dirName);
+                      addMovie(
+                        _movName,
+                        _dirName,
+                        posterImage,
+                      );
                       Navigator.pop(context);
                     }
                   : () {
-                      editMovie(_movName, _dirName, index);
+                      editMovie(_movName, _dirName, posterImage, index);
                       Navigator.pop(context);
                     },
               child: Text(
@@ -192,6 +219,7 @@ class _HomePageState extends State<HomePage> {
                     return MovieListItem(
                       movieDirector: mov.movieDirector,
                       movieName: mov.movieName,
+                      imageFile: mov.posterImage,
                       deleteMovieItem: () =>
                           deleteMovieItem(index: i, box: box),
                       editMovieItem: () =>

@@ -12,7 +12,7 @@ class Movie {
   String movieDirector;
 
   @HiveField(2)
-  File posterImage;
+  String posterImage;
 
   Movie({this.movieName, this.movieDirector, this.posterImage});
 }

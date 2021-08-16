@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:moviebuddy/widgets/movieListItem.dart';
 
@@ -8,6 +10,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List moviesList = [];
+  ScrollController _scrollController = new ScrollController();
+  int itemSetLength = 10;
+
+  @override
+  void initState() {
+    _scrollController.addListener(
+      () {
+        if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent) {
+          setState(() {
+            itemSetLength += 10;
+          });
+        }
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void deleteMovieItem({int index}) {
     showDialog(
@@ -136,8 +161,9 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     shrinkWrap: true,
-                    itemCount: moviesList.length,
+                    itemCount: min(moviesList.length, itemSetLength),
                     itemBuilder: (context, i) {
                       return MovieListItem(
                         movieName: moviesList[i]['movieName'],

@@ -121,6 +121,24 @@ class SignupScreen extends StatelessWidget {
                     );
                   }).catchError((e) {
                     print("signup error $e");
+                  }).then((value) {
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    )
+                        .then((user) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => HomePage(
+                            user: user.user,
+                          ),
+                        ),
+                      );
+                    }).catchError((e) {
+                      print("login error $e");
+                    });
                   });
                 },
                 child: Text("Signup"),
